@@ -9,6 +9,8 @@ interface OptionsPrompts {
 
 function Options({storage}: OptionsPrompts) {
   const [apiKey, setApiKey] = React.useState<string>('');
+  const [anthropicKey, setAnthropicKey] = React.useState<string>('');
+  const [voyageKey, setVoyageKey] = React.useState<string>('');
   const [ankiKey, setAnkiKey] = React.useState<string>('');
   const [ankiDeck, setAnkiDeck] = React.useState<string>('');
   const [saveButtonText, setSaveButtonText] = React.useState<string>('Save');
@@ -17,10 +19,14 @@ function Options({storage}: OptionsPrompts) {
   useEffect(() => {
     storage.get({
       apiKey: '',
+      anthropicKey: '',
+      voyageKey: '',
       ankiKey: '',
       ankiDeck: '',
     }, function (items) {
       setApiKey(items.apiKey);
+      setAnthropicKey(items.anthropicKey);
+      setVoyageKey(items.voyageKey);
       setAnkiKey(items.ankiKey);
       setAnkiDeck(items.ankiDeck);
     });
@@ -33,12 +39,14 @@ function Options({storage}: OptionsPrompts) {
   }
 
   function save() {
-    if (apiKey === '' || ankiKey === '' || ankiDeck === '') {
+    if ((apiKey === '' || anthropicKey === '') || voyageKey === '' || || ankiKey === '' || ankiDeck === '') {
       setSaveButtonText('Please fill out all fields');
       return;
     }
     storage.set({
       apiKey: apiKey,
+      anthropicKey: anthropicKey,
+      voyageKey: voyageKey,
       ankiKey: ankiKey,
       ankiDeck: ankiDeck,
     }, function () {
@@ -53,11 +61,15 @@ function Options({storage}: OptionsPrompts) {
   function clear() {
     storage.set({
       apiKey: "",
+      anthropicKey: "",
+      voyageKey: "",
       ankiKey: "",
       ankiDeck: "",
     }, function () {
       // Update status to let user know options were saved.
       setAnkiKey("");
+      setAnthropicKey("");
+      setVoyageKey("");
       setApiKey("");
       setAnkiDeck("");
       setClearButtonText('Settings cleared');
@@ -76,6 +88,8 @@ function Options({storage}: OptionsPrompts) {
 
   return <div className="flex flex-col p-2 w-fit">
     {setterElement(apiKey, setApiKey, "Open AI API Key")}
+    {setterElement(anthropicKey, setAnthropicKey, "Anthropic API Key")}
+    {setterElement(voyageKey, setVoyageKey, "Voyage AI API Key")}
     {setterElement(ankiKey, setAnkiKey, "Anki API Key")}
     {setterElement(ankiDeck, setAnkiDeck, "Anki Deck")}
     <button className="flex items-center justify-center mt-2 mb-2 border-2 rounded-md hover:bg-sky-200 bg-slate-300 px-1" onClick={save}>{saveButtonText}</button>
